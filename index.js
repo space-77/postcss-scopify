@@ -56,10 +56,23 @@ const extractScope = (options) => {
     return null;
 }
 
-const scopify = (options) => {
+const scopify = (options, { exclude = [] } = {}) => {
+    // 将 exclude 模式转换为 RegExp 对象
+    const excludePatterns = exclude.map(pattern => {
+        return pattern instanceof RegExp ? pattern : new RegExp(pattern);
+    });
+
     return {
         postcssPlugin: 'postcss-scopify',
         Once (root, { result }) {
+            // 获取当前处理的文件路径
+            const filePath = result.opts.from || '';
+            
+            // 使用正则表达式检查文件是否在排除列表中
+            if (excludePatterns.some(pattern => pattern.test(filePath))) {
+                return;
+            }
+
             const scope = extractScope(options);
             // guard statment- allow only valid scopes
             if(!isValidScope(scope)){
