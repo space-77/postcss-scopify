@@ -68,6 +68,8 @@ const scopify = (options, { exclude = [] } = {}) => {
             // 获取当前处理的文件路径
             const filePath = result.opts.from || '';
             
+            console.log(filePath)
+
             // 使用正则表达式检查文件是否在排除列表中
             if (excludePatterns.some(pattern => pattern.test(filePath))) {
                 return;
